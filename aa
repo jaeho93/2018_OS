@@ -1,0 +1,557 @@
+
+============== Build Boot Loader ===============
+
+make -C 00.BootLoader
+make[1]: Entering directory '/home/student/class/jaeho/00.BootLoader'
+nasm -o BootLoader.bin BootLoader.asm
+make[1]: Leaving directory '/home/student/class/jaeho/00.BootLoader'
+
+=============== Build Complete ===============
+
+
+=============== Build 32bit Kernel ===============
+
+make -C 01.Kernel32
+make[1]: Entering directory '/home/student/class/jaeho/01.Kernel32'
+mkdir -p Temp
+=== Make Dependency File ===
+make -C Temp -f ../Makefile InternalDependency
+make[2]: Entering directory '/home/student/class/jaeho/01.Kernel32/Temp'
+/usr/bin/x86_64-linux-gnu-gcc -c -m32 -ffreestanding -MM ../Source/Main.c > Dependency.dep
+make[2]: Leaving directory '/home/student/class/jaeho/01.Kernel32/Temp'
+=== Dependency Search Complete ===
+make -C Temp -f ../Makefile Kernel32.elf
+make[2]: Entering directory '/home/student/class/jaeho/01.Kernel32/Temp'
+make[2]: 'Kernel32.elf' is up to date.
+make[2]: Leaving directory '/home/student/class/jaeho/01.Kernel32/Temp'
+/usr/bin/x86_64-linux-gnu-objcopy -j .text -j .data -j .rodata -j .bss -S -O binary Temp/Kernel32.elf Temp/Kernel32.elf.bin
+cat Temp/EntryPoint.bin Temp/Kernel32.elf.bin > Kernel32.bin
+make[1]: Leaving directory '/home/student/class/jaeho/01.Kernel32'
+
+=============== Build Complete ===============
+
+
+=========== Disk Image Build Start ===========
+
+./ImageMaker.out 00.BootLoader/BootLoader.bin 01.Kernel32/Kernel32.bin
+[INFO] Copy boot loader to image file
+[INFO] File size is aligned 512 byte
+[iNFO] 00.BootLoader/BootLoader.bin size = [512] and sector count = [1]
+[INFO] Insert hash to protected mode kernel
+1: before Hash: 8e1000b8, fByte: fac08ed8
+1: after  Hash: 74d08e60, hash
+
+2: before Hash: 74d08e60, fByte: 9216010f
+2: after  Hash: e6c68f6f, hash
+
+3: before Hash: e6c68f6f, fByte: 3bb86600
+3: after  Hash: dd7ee96f, hash
+
+4: before Hash: dd7ee96f, fByte: f400000
+4: after  Hash: d23ee96f, hash
+
+5: before Hash: d23ee96f, fByte: ea66c022
+5: after  Hash: 3858294d, hash
+
+6: before Hash: 3858294d, fByte: 1001e
+6: after  Hash: 38592953, hash
+
+7: before Hash: 38592953, fByte: b8660008
+7: after  Hash: 803f295b, hash
+
+8: before Hash: 803f295b, fByte: d88e0010
+8: after  Hash: 58b1294b, hash
+
+9: before Hash: 58b1294b, fByte: e08ec08e
+9: after  Hash: b83fe9c5, hash
+
+10: before Hash: b83fe9c5, fByte: d08ee88e
+10: after  Hash: 68b1014b, hash
+
+11: before Hash: 68b1014b, fByte: fffebc
+11: after  Hash: 684efff7, hash
+
+12: before Hash: 684efff7, fByte: fffebd00
+12: after  Hash: 97b042f7, hash
+
+13: before Hash: 97b042f7, fByte: b0680000
+13: after  Hash: 27d842f7, hash
+
+14: before Hash: 27d842f7, fByte: 6a000100
+14: after  Hash: 4dd843f7, hash
+
+15: before Hash: 4dd843f7, fByte: e8006a03
+15: after  Hash: a5d829f4, hash
+
+16: before Hash: a5d829f4, fByte: a
+16: after  Hash: a5d829fe, hash
+
+17: before Hash: a5d829fe, fByte: ea0cc483
+17: after  Hash: 4fd4ed7d, hash
+
+18: before Hash: 4fd4ed7d, fByte: 10200
+18: after  Hash: 4fd5ef7d, hash
+
+19: before Hash: 4fd5ef7d, fByte: 89550008
+19: after  Hash: c680ef75, hash
+
+20: before Hash: c680ef75, fByte: 505756e5
+20: after  Hash: 96d7b990, hash
+
+21: before Hash: 96d7b990, fByte: 458b5251
+21: after  Hash: d35cebc1, hash
+
+22: before Hash: d35cebc1, fByte: a0be0c
+22: after  Hash: d3fc55cd, hash
+
+23: before Hash: d3fc55cd, fByte: e6f70000
+23: after  Hash: 350b55cd, hash
+
+24: before Hash: 350b55cd, fByte: 458bc789
+24: after  Hash: 70809244, hash
+
+25: before Hash: 70809244, fByte: 2be08
+25: after  Hash: 70822c4c, hash
+
+26: before Hash: 70822c4c, fByte: e6f70000
+26: after  Hash: 96752c4c, hash
+
+27: before Hash: 96752c4c, fByte: 758bc701
+27: after  Hash: e3feeb4d, hash
+
+28: before Hash: e3feeb4d, fByte: 800e8a10
+28: after  Hash: 63f0615d, hash
+
+29: before Hash: 63f0615d, fByte: e7400f9
+29: after  Hash: 6d8461a4, hash
+
+30: before Hash: 6d8461a4, fByte: 80008f88
+30: after  Hash: ed84ee2c, hash
+
+31: before Hash: ed84ee2c, fByte: c683000b
+31: after  Hash: 2b07ee27, hash
+
+32: before Hash: 2b07ee27, fByte: 2c78301
+32: after  Hash: 29c06d26, hash
+
+33: before Hash: 29c06d26, fByte: 595aebeb
+33: after  Hash: 709a86cd, hash
+
+34: before Hash: 709a86cd, fByte: 5d5e5f58
+34: after  Hash: 2dc4d995, hash
+
+35: before Hash: 2dc4d995, fByte: c3
+35: after  Hash: 2dc4d956, hash
+
+36: before Hash: 2dc4d956, fByte: 170000
+36: after  Hash: 2dd3d956, hash
+
+37: before Hash: 2dd3d956, fByte: 10098
+37: after  Hash: 2dd2d9ce, hash
+
+38: before Hash: 2dd2d9ce, fByte: 0
+38: after  Hash: 2dd2d9ce, hash
+
+39: before Hash: 2dd2d9ce, fByte: 0
+39: after  Hash: 2dd2d9ce, hash
+
+40: before Hash: 2dd2d9ce, fByte: ffff
+40: after  Hash: 2dd22631, hash
+
+41: before Hash: 2dd22631, fByte: cf9a00
+41: after  Hash: 2d1dbc31, hash
+
+42: before Hash: 2d1dbc31, fByte: ffff
+42: after  Hash: 2d1d43ce, hash
+
+43: before Hash: 2d1d43ce, fByte: cf9200
+43: after  Hash: 2dd2d1ce, hash
+
+44: before Hash: 2dd2d1ce, fByte: 74697753
+44: after  Hash: 59bba69d, hash
+
+45: before Hash: 59bba69d, fByte: 54206863
+45: after  Hash: d9bcefe, hash
+
+46: before Hash: d9bcefe, fByte: 7250206f
+46: after  Hash: 7fcbee91, hash
+
+47: before Hash: 7fcbee91, fByte: 6365746f
+47: after  Hash: 1cae9afe, hash
+
+48: before Hash: 1cae9afe, fByte: 20646574
+48: after  Hash: 3ccaff8a, hash
+
+49: before Hash: 3ccaff8a, fByte: 65646f4d
+49: after  Hash: 59ae90c7, hash
+
+50: before Hash: 59ae90c7, fByte: 63755320
+50: after  Hash: 3adbc3e7, hash
+
+51: before Hash: 3adbc3e7, fByte: 73736563
+51: after  Hash: 49a8a684, hash
+
+52: before Hash: 49a8a684, fByte: 21217e
+52: after  Hash: 498987fa, hash
+
+53: before Hash: 498987fa, fByte: 0
+53: after  Hash: 498987fa, hash
+
+54: before Hash: 498987fa, fByte: 0
+54: after  Hash: 498987fa, hash
+
+55: before Hash: 498987fa, fByte: 0
+55: after  Hash: 498987fa, hash
+
+56: before Hash: 498987fa, fByte: 0
+56: after  Hash: 498987fa, hash
+
+57: before Hash: 498987fa, fByte: 0
+57: after  Hash: 498987fa, hash
+
+58: before Hash: 498987fa, fByte: 0
+58: after  Hash: 498987fa, hash
+
+59: before Hash: 498987fa, fByte: 0
+59: after  Hash: 498987fa, hash
+
+60: before Hash: 498987fa, fByte: 0
+60: after  Hash: 498987fa, hash
+
+61: before Hash: 498987fa, fByte: 0
+61: after  Hash: 498987fa, hash
+
+62: before Hash: 498987fa, fByte: 0
+62: after  Hash: 498987fa, hash
+
+63: before Hash: 498987fa, fByte: 0
+63: after  Hash: 498987fa, hash
+
+64: before Hash: 498987fa, fByte: 0
+64: after  Hash: 498987fa, hash
+
+65: before Hash: 498987fa, fByte: 0
+65: after  Hash: 498987fa, hash
+
+66: before Hash: 498987fa, fByte: 0
+66: after  Hash: 498987fa, hash
+
+67: before Hash: 498987fa, fByte: 0
+67: after  Hash: 498987fa, hash
+
+68: before Hash: 498987fa, fByte: 0
+68: after  Hash: 498987fa, hash
+
+69: before Hash: 498987fa, fByte: 0
+69: after  Hash: 498987fa, hash
+
+70: before Hash: 498987fa, fByte: 0
+70: after  Hash: 498987fa, hash
+
+71: before Hash: 498987fa, fByte: 0
+71: after  Hash: 498987fa, hash
+
+72: before Hash: 498987fa, fByte: 0
+72: after  Hash: 498987fa, hash
+
+73: before Hash: 498987fa, fByte: 0
+73: after  Hash: 498987fa, hash
+
+74: before Hash: 498987fa, fByte: 0
+74: after  Hash: 498987fa, hash
+
+75: before Hash: 498987fa, fByte: 0
+75: after  Hash: 498987fa, hash
+
+76: before Hash: 498987fa, fByte: 0
+76: after  Hash: 498987fa, hash
+
+77: before Hash: 498987fa, fByte: 0
+77: after  Hash: 498987fa, hash
+
+78: before Hash: 498987fa, fByte: 0
+78: after  Hash: 498987fa, hash
+
+79: before Hash: 498987fa, fByte: 0
+79: after  Hash: 498987fa, hash
+
+80: before Hash: 498987fa, fByte: 0
+80: after  Hash: 498987fa, hash
+
+81: before Hash: 498987fa, fByte: 0
+81: after  Hash: 498987fa, hash
+
+82: before Hash: 498987fa, fByte: 0
+82: after  Hash: 498987fa, hash
+
+83: before Hash: 498987fa, fByte: 0
+83: after  Hash: 498987fa, hash
+
+84: before Hash: 498987fa, fByte: 0
+84: after  Hash: 498987fa, hash
+
+85: before Hash: 498987fa, fByte: 0
+85: after  Hash: 498987fa, hash
+
+86: before Hash: 498987fa, fByte: 0
+86: after  Hash: 498987fa, hash
+
+87: before Hash: 498987fa, fByte: 0
+87: after  Hash: 498987fa, hash
+
+88: before Hash: 498987fa, fByte: 0
+88: after  Hash: 498987fa, hash
+
+89: before Hash: 498987fa, fByte: 0
+89: after  Hash: 498987fa, hash
+
+90: before Hash: 498987fa, fByte: 0
+90: after  Hash: 498987fa, hash
+
+91: before Hash: 498987fa, fByte: 0
+91: after  Hash: 498987fa, hash
+
+92: before Hash: 498987fa, fByte: 0
+92: after  Hash: 498987fa, hash
+
+93: before Hash: 498987fa, fByte: 0
+93: after  Hash: 498987fa, hash
+
+94: before Hash: 498987fa, fByte: 0
+94: after  Hash: 498987fa, hash
+
+95: before Hash: 498987fa, fByte: 0
+95: after  Hash: 498987fa, hash
+
+96: before Hash: 498987fa, fByte: 0
+96: after  Hash: 498987fa, hash
+
+97: before Hash: 498987fa, fByte: 0
+97: after  Hash: 498987fa, hash
+
+98: before Hash: 498987fa, fByte: 0
+98: after  Hash: 498987fa, hash
+
+99: before Hash: 498987fa, fByte: 0
+99: after  Hash: 498987fa, hash
+
+100: before Hash: 498987fa, fByte: 0
+100: after  Hash: 498987fa, hash
+
+101: before Hash: 498987fa, fByte: 0
+101: after  Hash: 498987fa, hash
+
+102: before Hash: 498987fa, fByte: 0
+102: after  Hash: 498987fa, hash
+
+103: before Hash: 498987fa, fByte: 0
+103: after  Hash: 498987fa, hash
+
+104: before Hash: 498987fa, fByte: 0
+104: after  Hash: 498987fa, hash
+
+105: before Hash: 498987fa, fByte: 0
+105: after  Hash: 498987fa, hash
+
+106: before Hash: 498987fa, fByte: 0
+106: after  Hash: 498987fa, hash
+
+107: before Hash: 498987fa, fByte: 0
+107: after  Hash: 498987fa, hash
+
+108: before Hash: 498987fa, fByte: 0
+108: after  Hash: 498987fa, hash
+
+109: before Hash: 498987fa, fByte: 0
+109: after  Hash: 498987fa, hash
+
+110: before Hash: 498987fa, fByte: 0
+110: after  Hash: 498987fa, hash
+
+111: before Hash: 498987fa, fByte: 0
+111: after  Hash: 498987fa, hash
+
+112: before Hash: 498987fa, fByte: 0
+112: after  Hash: 498987fa, hash
+
+113: before Hash: 498987fa, fByte: 0
+113: after  Hash: 498987fa, hash
+
+114: before Hash: 498987fa, fByte: 0
+114: after  Hash: 498987fa, hash
+
+115: before Hash: 498987fa, fByte: 0
+115: after  Hash: 498987fa, hash
+
+116: before Hash: 498987fa, fByte: 0
+116: after  Hash: 498987fa, hash
+
+117: before Hash: 498987fa, fByte: 0
+117: after  Hash: 498987fa, hash
+
+118: before Hash: 498987fa, fByte: 0
+118: after  Hash: 498987fa, hash
+
+119: before Hash: 498987fa, fByte: 0
+119: after  Hash: 498987fa, hash
+
+120: before Hash: 498987fa, fByte: 0
+120: after  Hash: 498987fa, hash
+
+121: before Hash: 498987fa, fByte: 0
+121: after  Hash: 498987fa, hash
+
+122: before Hash: 498987fa, fByte: 0
+122: after  Hash: 498987fa, hash
+
+123: before Hash: 498987fa, fByte: 0
+123: after  Hash: 498987fa, hash
+
+124: before Hash: 498987fa, fByte: 0
+124: after  Hash: 498987fa, hash
+
+125: before Hash: 498987fa, fByte: 0
+125: after  Hash: 498987fa, hash
+
+126: before Hash: 498987fa, fByte: 0
+126: after  Hash: 498987fa, hash
+
+127: before Hash: 498987fa, fByte: 0
+127: after  Hash: 498987fa, hash
+
+iRead: 512
+vcbuffer[scount]: 512
+1: before Hash: 498987fa, fByte: ec8308ec
+1: after  Hash: a50a8f16, hash
+
+2: before Hash: a50a8f16, fByte: 2796804
+2: after  Hash: a773e712, hash
+
+3: before Hash: a773e712, fByte: 46a0001
+3: after  Hash: a319e713, hash
+
+4: before Hash: a319e713, fByte: 5e8006a
+4: after  Hash: a6f1e779, hash
+
+5: before Hash: a6f1e779, fByte: 83000000
+5: after  Hash: 25f1e779, hash
+
+6: before Hash: 25f1e779, fByte: feeb10c4
+6: after  Hash: db1af7bd, hash
+
+7: before Hash: db1af7bd, fByte: 83e58955
+7: after  Hash: 58ff7ee8, hash
+
+8: before Hash: 58ff7ee8, fByte: 45c710ec
+8: after  Hash: 1d386e04, hash
+
+9: before Hash: 1d386e04, fByte: b8000f8
+9: after  Hash: 16b86efc, hash
+
+10: before Hash: 16b86efc, fByte: c558b00
+10: after  Hash: 1aede5fc, hash
+
+11: before Hash: 1aede5fc, fByte: e0c1d089
+11: after  Hash: fa2c3575, hash
+
+12: before Hash: fa2c3575, fByte: c1d00102
+12: after  Hash: 3bfc3477, hash
+
+13: before Hash: 3bfc3477, fByte: c28904e0
+13: after  Hash: f9753097, hash
+
+14: before Hash: f9753097, fByte: 108458b
+14: after  Hash: f87d751c, hash
+
+15: before Hash: f87d751c, fByte: 1c001d0
+15: after  Hash: f9bd74cc, hash
+
+16: before Hash: f9bd74cc, fByte: 45c7f845
+16: after  Hash: bc7a8c89, hash
+
+17: before Hash: bc7a8c89, fByte: fc
+17: after  Hash: bc7a8c75, hash
+
+18: before Hash: bc7a8c75, fByte: 8b1ceb00
+18: after  Hash: 37666775, hash
+
+19: before Hash: 37666775, fByte: 148dfc45
+19: after  Hash: 23eb9b30, hash
+
+20: before Hash: 23eb9b30, fByte: f8458b00
+20: after  Hash: dbae1030, hash
+
+21: before Hash: dbae1030, fByte: 4d8bd001
+21: after  Hash: 9625c031, hash
+
+22: before Hash: 9625c031, fByte: 10558bfc
+22: after  Hash: 86704bcd, hash
+
+23: before Hash: 86704bcd, fByte: b60fca01
+23: after  Hash: 307f81cc, hash
+
+24: before Hash: 307f81cc, fByte: 83108812
+24: after  Hash: b36f09de, hash
+
+25: before Hash: b36f09de, fByte: 8b01fc45
+25: after  Hash: 386ef59b, hash
+
+26: before Hash: 386ef59b, fByte: 458bfc55
+26: after  Hash: 7de509ce, hash
+
+27: before Hash: 7de509ce, fByte: fd00110
+27: after  Hash: 723508de, hash
+
+28: before Hash: 723508de, fByte: c08400b6
+28: after  Hash: b2b10868, hash
+
+29: before Hash: b2b10868, fByte: c990d575
+29: after  Hash: 7b21dd1d, hash
+
+30: before Hash: 7b21dd1d, fByte: 4c2043c3
+30: after  Hash: 37019ede, hash
+
+31: before Hash: 37019ede, fByte: 75676e61
+31: after  Hash: 4266f0bf, hash
+
+32: before Hash: 4266f0bf, fByte: 20656761
+32: after  Hash: 620397de, hash
+
+33: before Hash: 620397de, fByte: 6e72654b
+33: after  Hash: c71f295, hash
+
+34: before Hash: c71f295, fByte: 53206c65
+34: after  Hash: 5f519ef0, hash
+
+35: before Hash: 5f519ef0, fByte: 74726174
+35: after  Hash: 2b23ff84, hash
+
+36: before Hash: 2b23ff84, fByte: 217e6465
+36: after  Hash: a5d9be1, hash
+
+iRead: 151
+vcbuffer[scount]: 512
+
+
+a5d9be1
+
+hbuffer[0]: a
+hbuffer[1]: 5d
+hbuffer[2]: ffffff9b
+hbuffer[3]: ffffffe1
+itargetfd: 0
+iWrite: 4
+itargetfd: 4
+iWrite: 512
+itargetfd: 516
+iWrite: 151
+itargetfd: 667
+[INFO] Copy protected mode kernel to image file
+[INFO] File size [667] and fill [357] byte
+[INFO] 01.Kernel32/Kernel32.bin size = [667] and sector count = [2]
+[INFO] Start to write kernel information
+[INFO] Total sector count except boot loader [2]
+[INFO] Image file create complete
+
+============= All Build Complete =============
+

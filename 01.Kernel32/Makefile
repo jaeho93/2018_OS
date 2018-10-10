@@ -29,7 +29,7 @@ ExecuteInternalBuild: dep
 	make -C $(OBJECTDIRECTORY) -f ../Makefile Kernel32.elf
 
 $(OBJECTDIRECTORY)/Kernel32.elf.bin: ExecuteInternalBuild
-	$(OBJCOPY32) $(OBJECTDIRECTORY)/kernel32.elf $@
+	$(OBJCOPY32) $(OBJECTDIRECTORY)/Kernel32.elf $@
 
 Kernel32.bin: $(OBJECTDIRECTORY)/EntryPoint.bin $(OBJECTDIRECTORY)/Kernel32.elf.bin
 	cat $^ > $@
@@ -58,7 +58,7 @@ ASSEMBLYOBJECTFILES = $(notdir $(patsubst %.asm,%.o,$(ASSEMBLYSOURCEFILES)))
 InternalDependency:
 	$(GCC32) -MM $(CSOURCEFILES) > Dependency.dep
 
-kernel32.elf: $(CENTRYPOINTOBJECTFILE) $(COBJECTFILES) $(ASSEMBLYOBJECTFILES)
+Kernel32.elf: $(CENTRYPOINTOBJECTFILE) $(COBJECTFILES) $(ASSEMBLYOBJECTFILES)
 	$(LD32) -o $@ $^
 
 ifeq (Dependency.dep, $(wildcard Dependency.dep))
