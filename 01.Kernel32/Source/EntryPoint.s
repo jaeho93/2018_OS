@@ -9,24 +9,42 @@ START:
     mov ds, ax
     mov es, ax
 
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; A20 게이트를 활성화
+    ; BIOS를 이용한 전환이 실패했을 때 시스템 컨트롤 포트로 전환 시도
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; BIOS 서비스를 사용해서 A20 게이트를 활성화
+    mov ax, 0x2401  ; A20 게이트 활성화 서비스 설정
+    int 0x15        ; BIOS 인터럽트 서비스 호출
+
+    jc .A20GATEERROR ; A20 게이트 활성화가 성공했는지 확인
+    jmp .A20GATESUCCESS
+
+.A20GATEERROR:
+    ; 에러 발생 시, 시스템 컨트롤 포트로 전환 시도
+    in al, 0x92     ; 시스템 컨트롤 포트에서 1바이트를 읽어 AL 레지스터에 저장
+    or al, 0x02     ; 읽은 값에 A20 게이트 비트를 1로 설정
+    and al, 0xFE    ; 시스템 리셋 방지를 위해 0xFE와 AND 연산하여 비트 0를 0으로 설정
+    out 0x92, al    ; 시스템 컨트롤 포트(0x92) 에 변경된 값을 1 바이트 설정
+
+.A20GATESUCCESS:
     cli                       ; 인터럽트 발생하지 못하도록 설정
 ; GDTR 자료구조 정의
 
+    lgdt [ GDTR ] ; GDTR 자료구조를 프로세서에 설정하여 GDT 테이블을 로드
 
-lgdt [ GDTR ] ; GDTR 자료구조를 프로세서에 설정하여 GDT 테이블을 로드
-
-mov eax, 0x4000003B ; PG=0, CD=1, NW=0, AM=0, WP=0, NE=1, ET=1, TS=1, EM=0, MP=1, PE=1
-mov cr0, eax        ; CR0 컨트롤 레지스터에 위에서 저장한 플래그 설정하여 보호모드로 전환
+    mov eax, 0x4000003B ; PG=0, CD=1, NW=0, AM=0, WP=0, NE=1, ET=1, TS=1, EM=0, MP=1, PE=1
+    mov cr0, eax        ; CR0 컨트롤 레지스터에 위에서 저장한 플래그 설정하여 보호모드로 전환
 
 ; 커널 코드 세그먼트를 0x00을 기준으로 하는 것으로 교체하고 EIP의 값을 0x00을 기준으로 재설정
 ; CS 세그먼트 셀렉터: EIP
 
-jmp dword 0x08: (PROTECTEDMODE - $$ + 0x10000 )
+    jmp dword 0x18: (PROTECTEDMODE - $$ + 0x10000 )
 ; 실제 코드가 0x10000 기준으로 실행되므로
 
 [BITS 32]
 PROTECTEDMODE:
-    mov ax, 0x10 ; 보호 모드 커널용 데이터 세그먼트 디스크립터를 AX 레지스터에 저장
+    mov ax, 0x20 ; 보호 모드 커널용 데이터 세그먼트 디스크립터를 AX 레지스터에 저장
     mov ds, ax
     mov es, ax
     mov fs, ax
@@ -43,7 +61,7 @@ PROTECTEDMODE:
     call PRINTMESSAGE
     add esp, 12
 
-    jmp dword 0x08: 0x10200 ; C 언어 커널이 존재하는 0x10200 어드레스로 이동하여 C 언어 커널 수행
+    jmp dword 0x18: 0x10200 ; C 언어 커널이 존재하는 0x10200 어드레스로 이동하여 C 언어 커널 수행
 
 
 ; 메시지를 출력하는 함수
@@ -117,6 +135,24 @@ GDT:
         db 0x00
         db 0x00
         db 0x00
+
+    ; IA-32e 모드 커널용 코드 세그먼트 디스크립터
+    IA_32eCODEDESCRIPTOR:
+        dw 0xFFFF
+        dw 0x0000
+        db 0x00
+        db 0x9A
+        db 0xAF
+        db 0x00
+
+    IA_32eDATADESCRIPTOR:
+        dw 0xFFFF
+        dw 0x0000
+        db 0x00
+        db 0x92
+        db 0xAF
+        db 0x00
+
 
 
 ; 커널 코드 세그먼트와 데이터 세그먼트 디스크립터 생성 코드
